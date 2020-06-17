@@ -21,13 +21,21 @@ class Trie {
 
     for (let i = 0; i < code.length; i++){
       const radix = code[i];
-      if (!node.children[radix]){
-        node.children[radix] = new TrieNode();
-        node = node.children[radix];
+      let child = node.children[radix];
+      if (!child){
+        child = new this.Node();
+        node.children[radix] = child;
       }
+
+      node = child;
     }
 
-    node.words.push(word);
+    if (node.words.includes(word)){
+      return;
+    } else {
+      node.words.push(word);
+      this._count += 1;
+    }
   }
 
   lookupCode(code) {
@@ -46,6 +54,28 @@ class Trie {
   }
 
   lookupPrefix(codePrefix) {
+    let node = this._root;
+
+    for (let i = 0; i < codePrefix.length; i++){
+      const radix = codePrefix[i];
+      node = node.children[radix];
+
+      if (!node){
+        return [];
+      }
+    }
+
+    const getNodeWords = (node, words) => {
+      words.push(...node.words);
+
+      Object.keys(node.children).forEach(childKey => {
+        getNodeWords(node.children[childKey], words);
+      });
+
+      return words;
+    }
+
+    return getNodeWords(node, []);
   }
 
   count() {
