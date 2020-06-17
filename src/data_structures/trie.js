@@ -15,7 +15,19 @@ class Trie {
   }
 
   addWord(word) {
+    // Basically an insert!
     const code = this.buildCode(word);
+    let node = this._root;
+
+    for (let i = 0; i < code.length; i++){
+      const radix = code[i];
+      if (!node.children[radix]){
+        node.children[radix] = new TrieNode();
+        node = node.children[radix];
+      }
+    }
+
+    node.words.push(word);
   }
 
   lookupCode(code) {
