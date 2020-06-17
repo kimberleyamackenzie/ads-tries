@@ -31,6 +31,18 @@ class Trie {
   }
 
   lookupCode(code) {
+    let node = this._root;
+
+    for (let i = 0; i < code.length; i++){
+      const radix = code[i];
+      node = node.children[radix];
+
+      if (!node){
+        return [];
+      }
+    }
+
+    return node.words;
   }
 
   lookupPrefix(codePrefix) {
